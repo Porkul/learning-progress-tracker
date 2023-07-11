@@ -1,0 +1,7 @@
+course abstract: (CourseName, required points, int students enrolled, itn students completed),
+getPoints
+
+JavaCourse
+DsaCourse
+DatabaseCourse
+SpringCourse
