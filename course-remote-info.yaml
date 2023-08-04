@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://cogniterra.org/media/attachments/lesson/25673/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: "Mon, 10 Jul 2023 16:13:28 UTC"
+update_date: "Fri, 04 Aug 2023 14:36:34 UTC"
 stages:
 - id: 979
   step: 14396
@@ -16,10 +16,10 @@ stages:
   is_completed: true
 - id: 982
   step: 14399
-  is_completed: false
+  is_completed: true
 - id: 983
   step: 14400
-  is_completed: false
+  is_completed: true
 topics:
   0:
   - title: Computer algorithms
@@ -48,10 +48,10 @@ topics:
     theory_id: 19510
   - title: Complex constructions in pseudocode
     theory_id: 20922
-  - title: Immutability
-    theory_id: 7929
   - title: Fixed-size array
     theory_id: 20078
+  - title: Immutability
+    theory_id: 7929
   - title: Dynamic array
     theory_id: 5357
   - title: Computer programming

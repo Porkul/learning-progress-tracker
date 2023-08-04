@@ -4,11 +4,8 @@ import java.util.*;
 class MapFunctions {
 
     public static void printWithSameLetter(Map<String, String> map) {
-        for (var entry : map.entrySet()) {
-            if(entry.getValue().charAt(0) == entry.getKey().charAt(0)) {
-                System.out.println(entry.getKey() + " " + entry.getValue());
-            }
-        }
+        // write your code here
+
     }
 }
 

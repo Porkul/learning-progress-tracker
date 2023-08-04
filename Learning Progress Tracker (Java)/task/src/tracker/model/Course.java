@@ -1,35 +1,14 @@
 package tracker.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.*;
 
-public class Course {
-    private final CourseType courseType;
-    private boolean isCompleted;
-
-    public CourseType getCourseType() {
-        return courseType;
-    }
-
-    private int points;
-    private Map<Student, Integer> students = new HashMap<>();
-    public Course(CourseType courseType) {
-        this.courseType = courseType;
-        this.isCompleted = false;
-        this.points = 0;
-    }
-
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
-//        if (this.points > 0) {
-//            enrollmentCount++;
-//        } else if (this.points >= requiredPoints)) {
-//            this.isCompleted = true;
-//        }
-    }
-
+@Getter
+@RequiredArgsConstructor
+public enum Course {
+    JAVA("Java", 600),
+    DSA("DSA", 400),
+    DATABASES("Databases", 480),
+    SPRING("Spring", 550);
+    private final String name;
+    private final int requiredPoints;
 }

@@ -975,106 +975,6 @@ files:
   learner_created: false
 - name: src/tracker/service/StudentService.java
   visible: true
-  text: |
-    package tracker.service;
-
-    import tracker.Main;
-    import tracker.model.Course;
-    import tracker.model.Student;
-    import tracker.validator.Validator;
-
-    import java.util.*;
-    import java.util.stream.Collectors;
-
-    public class StudentService {
-        private Validator validator;
-
-        public StudentService(Validator validator) {
-            this.validator = validator;
-        }
-        public void addStudent(Scanner scanner, Set<Student> students) {
-            System.out.println("Enter student credentials or 'back' to return:");
-            String input = scanner.nextLine().trim();
-            while (!input.equals("back")) {
-                Optional<Student> student = validator.validateCredentials(input, scanner, students);
-                if(student.isPresent()){
-                    students.add(student.get());
-                    System.out.println("The student has been added.");
-                    input = scanner.nextLine();
-                } else {
-                    break;
-                }
-            };
-            System.out.printf("Total %d students have been added\n", students.size());
-        }
-        public void addpoints(Scanner scanner, Set<Student> students, String message) {
-            System.out.println(message);
-            String input = scanner.nextLine();
-            String[] parts = input.trim().split("\\s+");
-            if (input.equals("back")) {
-                return;
-            }
-
-            if (parts.length != 5) {
-                addpoints(scanner, students, "Incorrect points format");
-                return;
-            }
-
-            if (!input.matches("^[0-9\\s]+$")) {
-                String error = parts[0].matches("^[0-9\\s]+$")? "Incorrect points format" : "No student is found for id=" + parts[0];
-                addpoints(scanner, students, error);
-                return;
-            };
-            Optional<Student> student = findStudentById(parts[0], students);
-            if (student.isEmpty()) {
-                addpoints(scanner, students, "No student is found for id=" + parts[0]);
-            } else {
-                int[] points =
-                        Arrays.stream(parts, 1, parts.length).mapToInt(Integer::parseInt).toArray();
-
-                List<Course> courses = student.get().getCourses();
-
-                for (int i = 0; i < points.length; i++) {
-                    courses.get(i).setPoints(courses.get(i).getPoints() + points[i]);
-                }
-                addpoints(scanner, students, "Points updated");
-            }
-        }
-        public Optional<Student> findStudentById(String input, Set<Student> students) {
-            return input.matches("^\\d+$") ? students.stream()
-                    .filter(student -> student.getId().equals(Long.valueOf(input)))
-                    .findFirst() : Optional.empty();
-        }
-
-
-        public void getAllStudents(Set<Student> students) {
-            if (!students.isEmpty()) {
-                System.out.println("Students:");
-                students.forEach(System.out::println);
-            } else {
-                System.out.println("No students found.");
-            }
-        }
-
-        public void getStudentDetails(Scanner scanner, Set<Student> students, String message) {
-            System.out.println(message);
-            String input = scanner.nextLine().trim();
-            if (input.equals("back")) {
-                return;
-            }
-            Optional<Student> student = findStudentById(input, students);
-            if (student.isPresent()) {
-                StringBuilder sb = new StringBuilder(student.get().getId() + " points: " );
-                String courseDetails = student.get().getCourses().stream()
-                        .map(course -> course.getCourseName() + "=" + course.getPoints())
-                        .collect(Collectors.joining(";"));
-                sb.append(courseDetails);
-                getStudentDetails(scanner, students, sb.toString());
-            } else {
-                getStudentDetails(scanner, students, "No student is found for id=" + input);
-            }
-        }
-    }
   learner_created: true
 - name: src/tracker/model/Course.java
   visible: true
@@ -1198,94 +1098,6 @@ files:
   learner_created: true
 - name: src/tracker/model/Student.java
   visible: true
-  text: |
-    package tracker.model;
-
-    import java.util.ArrayList;
-    import java.util.List;
-    import java.util.Map;
-    import java.util.Objects;
-    import java.util.stream.Collectors;
-
-    public class Student {
-        private Long id;
-        private String firstName;
-        private String lastName;
-        private String email;
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        private final List<Course> courses = new ArrayList<>();
-
-        public Student(Long id, String firstName, String lastName, String email) {
-            this.id = id;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-
-            for (CourseName courseName : CourseName.values()) {
-                courses.add(new Course(courseName));
-            }
-        }
-        public Long getId() {
-            return id;
-        }
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-        public List<Course> getCourses() {
-            return courses;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append(id);
-
-            for (Course course : courses) {
-                int points = course.getPoints();
-                sb.append(" ").append(points != 0 ? points : "");
-            }
-
-            return sb.toString();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Student student = (Student) o;
-            return Objects.equals(email, student.email);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(email);
-        }
-
-    }
   learner_created: true
 - name: src/tracker/InputProcessor.java
   visible: true
@@ -1334,9 +1146,6 @@ files:
         }
     }
   learner_created: true
-- name: src/tracker/text
-  visible: true
-  learner_created: true
 - name: src/tracker/service/CourseService.java
   visible: true
   learner_created: true
@@ -1363,29 +1172,36 @@ files:
 
     }
   learner_created: true
+- name: src/tracker/course/Course.java
+  visible: true
+  learner_created: true
+- name: src/tracker/course/CourseStatistics.java
+  visible: true
+  learner_created: true
+- name: src/tracker/model/CourseStatistics.java
+  visible: true
+  learner_created: true
+- name: src/tracker/service/StudentServiceImpl.java
+  visible: true
+  learner_created: true
+- name: src/tracker/controller/StudentController.java
+  visible: true
+  learner_created: true
+- name: src/tracker/repository/StudentRepository.java
+  visible: true
+  learner_created: true
+- name: src/tracker/trash/Enrollment.java
+  visible: true
+  learner_created: true
+- name: src/tracker/trash/ProgressTracker.java
+  visible: true
+  learner_created: true
+- name: src/tracker/text
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/14399#comment
-status: Failed
+status: Solved
 feedback:
-  message: |-
-    Wrong answer in test #33
-
-    Expected 2 lines, but your output was only 1 lines.
-
-    Please find below the output of your program during this failed test.
-    Note that the &#39;&gt;&#39; character indicates the beginning of the input line.
-
-    ---
-
-    Learning Progress Tracker
-    &gt; statistics
-    Type the name of a course to see details or &#39;back&#39; to quit
-    Most popular: n/a
-    Least popular: n/a
-    Highest activity: n/a
-    Lowest activity: n/a
-    Easiest course: n/a
-    Hardest course: n/a
-    &gt; Java
-    Unknown command!
-  time: "Mon, 10 Jul 2023 13:26:21 UTC"
+  message: Congratulations!
+  time: "Sun, 30 Jul 2023 18:47:36 UTC"
 record: 4

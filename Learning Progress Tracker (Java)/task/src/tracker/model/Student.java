@@ -1,66 +1,65 @@
 package tracker.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class Student {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
+     private final String id;
+     private final String firstName;
+     private final String lastName;
+     private final String email;
+     private Map<Course, Integer> coursePoints;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+     private static int nextStudentId = 1000;
 
-//    private final List<Course> courses = new ArrayList<>();
-    private final Map<String, Course> courses = new HashMap<>();
+     public Student(String firstName, String lastName, String email) {
+          this.id = String.valueOf(nextStudentId++);
+          this.firstName = firstName;
+          this.lastName = lastName;
+          this.email = email;
+          this.coursePoints = new HashMap<>();
+          for (Course course : Course.values()) {
+               coursePoints.put(course, 0);
+          }
+     }
 
-    public Student(Long id, String firstName, String lastName, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+     public String getEnrollmentsPoints() {
+          return id + " points: " + Arrays.stream(Course.values())
+                  .map(course -> {
+                       int points = coursePoints.get(course);
+                       return course.getName() + "=" + points;
+                  })
+                  .collect(Collectors.joining(";"));
+     }
+     public int getPointsForCourse(Course course) {
+          return coursePoints.get(course);
+     }
+     @Override
+     public String toString() {
+          StringBuilder sb = new StringBuilder();
+          sb.append(id);
 
-        for (CourseType courseType : CourseType.values()) {
-            courses.put(courseType.getCourseName(), new Course(courseType));
-        }
-    }
-    public Long getId() {
-        return id;
-    }
+          for (Integer points : coursePoints.values()) {
+               sb.append(" ").append(points != 0 ? points : "");
+          }
 
-    public String getEmail() {
-        return email;
-    }
+          return sb.toString();
+     }
+     @Override
+     public boolean equals(Object o) {
+          if (this == o) return true;
+          if (o == null || getClass() != o.getClass()) return false;
+          Student student = (Student) o;
+          return Objects.equals(email, student.email);
+     }
 
-    public Map<String, Course> getCourses() {
-        return courses;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(id);
-
-        for (Course course : courses.values()) {
-            int points = course.getPoints();
-            sb.append(" ").append(points != 0 ? points : "");
-        }
-
-        return sb.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
-        return Objects.equals(email, student.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(email);
-    }
-
+     @Override
+     public int hashCode() {
+          return Objects.hash(email);
+     }
 }
